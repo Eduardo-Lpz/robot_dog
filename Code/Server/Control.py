@@ -53,7 +53,7 @@ class Control:
                 file2.write('\t')
             file2.write('\n')
         file2.close()
-        
+
     def coordinateToAngle(self,x,y,z,l1=23,l2=55,l3=55):
         a=math.pi/2-math.atan2(z,y)
         x_3=0
@@ -68,7 +68,7 @@ class Control:
         b=round(math.degrees(b))
         c=round(math.degrees(c))
         return a,b,c
-    
+
     def angleToCoordinate(self,a,b,c,l1=23,l2=55,l3=55):
         a=math.pi/180*a
         b=math.pi/180*b
@@ -77,7 +77,7 @@ class Control:
         y=l3*math.sin(a)*math.cos(b+c)+l2*math.sin(a)*math.cos(b)+l1*math.sin(a)
         z=l3*math.cos(a)*math.cos(b+c)+l2*math.cos(a)*math.cos(b)+l1*math.cos(a)
         return x,y,z
-    
+
     def calibration(self):
         for i in range(4):
             self.calibration_angle[i][0],self.calibration_angle[i][1],self.calibration_angle[i][2]=self.coordinateToAngle(self.calibration_point[i][0],
@@ -118,14 +118,14 @@ class Control:
             print("This coordinate point is out of the active range")
     def checkPoint(self):
         flag=True
-        leg_lenght=[0,0,0,0,0,0]  
+        leg_lenght=[0,0,0,0,0,0]
         for i in range(4):
           leg_lenght[i]=math.sqrt(self.point[i][0]**2+self.point[i][1]**2+self.point[i][2]**2)
         for i in range(4         ):
           if leg_lenght[i] > 130 or leg_lenght[i] < 25:
             flag=False
         return flag
-            
+
     def condition(self):
         while True:
             try:
@@ -138,13 +138,13 @@ class Control:
                         self.relax_flag=True
                         self.relax(True)
                         self.order=['','','','','']
-                    if self.relax_flag==True and self.order[0] != ''  and self.order[0] !=cmd.CMD_RELAX: 
+                    if self.relax_flag==True and self.order[0] != ''  and self.order[0] !=cmd.CMD_RELAX:
                         self.relax(False)
                         self.relax_flag=False
                     if self.attitude_flag==True and self.order[0] !=cmd.CMD_ATTITUDE and self.order[0] != '':
-                        self.stop()   
-                        self.attitude_flag=False  
-                    if self.relax_flag==False: 
+                        self.stop()
+                        self.attitude_flag=False
+                    if self.relax_flag==False:
                         self.move_count+=time.time()-self.move_timeout
                         self.move_timeout=time.time()
                     if self.order[0]==cmd.CMD_MOVE_STOP:
@@ -204,7 +204,7 @@ class Control:
                             self.calibration_point[2][1]=int(self.order[3])
                             self.calibration_point[2][2]=int(self.order[4])
                             self.calibration()
-                            self.run()   
+                            self.run()
                         elif self.order[1]=="four":
                             self.calibration_point[3][0]=int(self.order[2])
                             self.calibration_point[3][1]=int(self.order[3])
@@ -235,11 +235,12 @@ class Control:
         elif var > v_max:
             return v_max
         else:
-            return var            
+            return var
     def map(self,value,fromLow,fromHigh,toLow,toHigh):
         return (toHigh-toLow)*(value-fromLow) / (fromHigh-fromLow) + toLow
     def changeCoordinates(self,move_order,X1=0,Y1=96,Z1=0,X2=0,Y2=96,Z2=0,pos=np.mat(np.zeros((3, 4)))):
-        if move_order == 'turnLeft':  
+        print("From the current position to the new position")
+        if move_order == 'turnLeft':
             for i in range(2):
                 self.point[2*i][0]=((-1)**(1+i))*X1+10
                 self.point[2*i][1]=Y1
@@ -247,7 +248,7 @@ class Control:
                 self.point[1+2*i][0]=((-1)**(1+i))*X2+10
                 self.point[1+2*i][1]=Y2
                 self.point[1+2*i][2]=((-1)**(1+i))*Z2+((-1)**i)*10
-        elif move_order == 'turnRight': 
+        elif move_order == 'turnRight':
             for i in range(2):
                 self.point[2*i][0]=((-1)**(i))*X1+10
                 self.point[2*i][1]=Y1
@@ -255,17 +256,17 @@ class Control:
                 self.point[1+2*i][0]=((-1)**(i))*X2+10
                 self.point[1+2*i][1]=Y2
                 self.point[1+2*i][2]=((-1)**(i))*Z2+((-1)**i)*10
-        elif (move_order == 'height') or (move_order == 'horizon'):   
+        elif (move_order == 'height') or (move_order == 'horizon'):
             for i in range(2):
                 self.point[3*i][0]=X1+10
                 self.point[3*i][1]=Y1
                 self.point[1+i][0]=X2+10
                 self.point[1+i][1]=Y2
-        elif move_order == 'Attitude Angle': 
+        elif move_order == 'Attitude Angle':
             for i in range(2):
                 self.point[3-i][0]=pos[0,1+2*i]+10
                 self.point[3-i][1]=pos[2,1+2*i]
-                self.point[3-i][2]=pos[1,1+2*i]      
+                self.point[3-i][2]=pos[1,1+2*i]
                 self.point[i][0]=pos[0,2*i]+10
                 self.point[i][1]=pos[2,2*i]
                 self.point[i][2]=pos[1,2*i]
@@ -316,7 +317,7 @@ class Control:
             Z2=X2
             self.changeCoordinates('turnLeft',X1,Y1,Z1,X2,Y2,Z2)
             #time.sleep(0.01)
-    
+
     def turnRight(self):
          for i in range(0,361,self.speed):
             X1=3*math.cos(i*math.pi/180)
@@ -329,7 +330,7 @@ class Control:
                 Y1=self.height
             Z1=X1
             Z2=X2
-            self.changeCoordinates('turnRight',X1,Y1,Z1,X2,Y2,Z2)  
+            self.changeCoordinates('turnRight',X1,Y1,Z1,X2,Y2,Z2)
             #time.sleep(0.01)
     def stop(self):
         p=[[10, self.height, 10], [10, self.height, 10], [10, self.height, -10], [10, self.height, -10]]
@@ -424,15 +425,15 @@ class Control:
         l = 136
         if h!=0:
             h=self.height
-        pos = np.mat([0.0,  0.0,  h ]).T 
-        rpy = np.array([r,  p,  y]) * math.pi / 180 
+        pos = np.mat([0.0,  0.0,  h ]).T
+        rpy = np.array([r,  p,  y]) * math.pi / 180
         R, P, Y = rpy[0], rpy[1], rpy[2]
         rotx = np.mat([[ 1,       0,            0          ],
                      [ 0,       math.cos(R), -math.sin(R)],
                      [ 0,       math.sin(R),  math.cos(R)]])
         roty = np.mat([[ math.cos(P),  0,      -math.sin(P)],
                      [ 0,            1,       0          ],
-                     [ math.sin(P),  0,       math.cos(P)]]) 
+                     [ math.sin(P),  0,       math.cos(P)]])
         rotz = np.mat([[ math.cos(Y), -math.sin(Y),  0     ],
                      [ math.sin(Y),  math.cos(Y),  0     ],
                      [ 0,            0,            1     ]])
@@ -449,10 +450,10 @@ class Control:
         for i in range(4):
             AB[:, i] = pos + rot_mat * footpoint_struc[:, i] - body_struc[:, i]
         return (AB)
-        
+
 if __name__=='__main__':
     pass
 
-        
-   
+
+
 

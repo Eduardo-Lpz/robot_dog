@@ -26,11 +26,11 @@ class MyWindow(QMainWindow,Ui_server):
             self.video.start()
             self.instruction=threading.Thread(target=self.server.receive_instruction)
             self.instruction.start()
-            
+
             if self.user_ui:
                 self.pushButton_On_And_Off.setText('Off')
                 self.states.setText('On')
-                
+
     def parseOpt(self):
         self.opts,self.args = getopt.getopt(sys.argv[1:],"tn")
         for o,a in self.opts:
@@ -39,7 +39,7 @@ class MyWindow(QMainWindow,Ui_server):
                 self.start_tcp=True
             elif o in ('-n'):
                 self.user_ui=False
-                
+
     def on_and_off_server(self):
         if self.pushButton_On_And_Off.text() == 'On':
             self.pushButton_On_And_Off.setText('Off')
@@ -76,12 +76,12 @@ class MyWindow(QMainWindow,Ui_server):
         if self.user_ui:
             QCoreApplication.instance().quit()
         os._exit(0)
-        
+
 if __name__ == '__main__':
     try:
         myshow=MyWindow()
         if myshow.user_ui==True:
-            myshow.show();   
+            myshow.show();
             sys.exit(myshow.app.exec_())
         else:
             try:

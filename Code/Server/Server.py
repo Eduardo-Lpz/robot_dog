@@ -32,7 +32,7 @@ class StreamingOutput(io.BufferedIOBase):
 
 class Server:
     def __init__(self):
-        
+
         self.tcp_flag=False
         self.led=Led()
         self.servo=Servo()
@@ -54,23 +54,23 @@ class Server:
         #Port 8001 for video transmission
         self.server_socket = socket.socket()
         self.server_socket.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEPORT,1)
-        self.server_socket.bind((HOST, 8001))              
+        self.server_socket.bind((HOST, 8001))
         self.server_socket.listen(1)
-        
+
         #Port 5001 is used for instruction sending and receiving
         self.server_socket1 = socket.socket()
         self.server_socket1.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEPORT,1)
         self.server_socket1.bind((HOST, 5001))
         self.server_socket1.listen(1)
         print('Server address: '+HOST)
-        
+
     def turn_off_server(self):
         try:
             self.connection.close()
             self.connection1.close()
         except :
             print ('\n'+"No client connection")
-    
+
     def reset_server(self):
         self.turn_off_server()
         self.turn_on_server()
@@ -96,13 +96,13 @@ class Server:
         camera.configure(camera.create_video_configuration(main={"size": (400, 300)}))
         output = StreamingOutput()
         encoder = JpegEncoder(q=95)
-        camera.start_recording(encoder, FileOutput(output),quality=Quality.VERY_HIGH) 
+        camera.start_recording(encoder, FileOutput(output),quality=Quality.VERY_HIGH)
         while True:
             with output.condition:
                 output.condition.wait()
                 frame = output.frame
-            try:                
-                lenFrame = len(output.frame) 
+            try:
+                lenFrame = len(output.frame)
                 #print("output .length:",lenFrame)
                 lengthBin = struct.pack('<I', lenFrame)
                 self.connection.write(lengthBin)
@@ -134,8 +134,8 @@ class Server:
         if self.control.move_flag!=2:
             command=cmd.CMD_RELAX+"#"+str(self.control.move_flag)+"\n"
             self.send_data(self.connection1,command)
-            self.control.move_flag= 2  
-                  
+            self.control.move_flag= 2
+
     def receive_instruction(self):
         try:
             self.connection1,self.client_address1 = self.server_socket1.accept()
@@ -154,7 +154,7 @@ class Server:
                     break
                 else:
                     break
-            
+
             if allData=="" and self.tcp_flag:
                 self.reset_server()
                 break
@@ -163,7 +163,7 @@ class Server:
                 #print(cmdArray)
                 if cmdArray[-1] !="":
                     cmdArray==cmdArray[:-1]
-            
+
             for oneCmd in cmdArray:
                 data=oneCmd.split("#")
                 if data==None or data[0]=='':
@@ -176,7 +176,7 @@ class Server:
                     except:
                         pass
                     thread_led=threading.Thread(target=self.led.light,args=(data,))
-                    thread_led.start()   
+                    thread_led.start()
                 elif cmd.CMD_LED_MOD in data:
                     try:
                         stop_thread(thread_led)
@@ -191,7 +191,7 @@ class Server:
                     self.send_data(self.connection1,command)
                 elif cmd.CMD_POWER in data:
                     self.measuring_voltage(self.connection1)
-                elif cmd.CMD_WORKING_TIME in data: 
+                elif cmd.CMD_WORKING_TIME in data:
                     if self.control.move_timeout!=0 and self.control.relax_flag==True:
                         if self.control.move_count >180:
                             command=cmd.CMD_WORKING_TIME+'#'+str(180)+'#'+str(round(self.control.move_count-180))+"\n"
@@ -207,19 +207,19 @@ class Server:
                     self.control.order=data
                     self.control.timeout=time.time()
 
-        try:    
+        try:
             stop_thread(thread_power)
         except:
             pass
-        try:    
+        try:
             stop_thread(thread_led)
         except:
             pass
         print("close_recv")
         self.control.relax_flag=False
         self.control.order[0]=cmd.CMD_RELAX
-        
+
 
 if __name__ == '__main__':
     pass
-    
+

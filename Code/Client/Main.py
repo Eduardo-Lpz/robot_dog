@@ -34,7 +34,7 @@ class MyWindow(QMainWindow,Ui_client):
         self.progress_Power.setMinimum(0)
         self.progress_Power.setMaximum(100)
         self.progress_Power.setValue(90)
-        
+
         #Button click event
         self.Button_Connect.clicked.connect(self.connect)
         self.Button_Video.clicked.connect(self.video)
@@ -45,7 +45,7 @@ class MyWindow(QMainWindow,Ui_client):
         self.Button_Sonic.clicked.connect(self.sonic)
         self.Button_Relax.clicked.connect(self.relax)
         self.Button_Face_ID.clicked.connect(self.showFaceWindow)
-        
+
         self.Button_ForWard.pressed.connect(self.forward)
         self.Button_ForWard.released.connect(self.stop)
         self.Button_BackWard.pressed.connect(self.backward)
@@ -67,13 +67,13 @@ class MyWindow(QMainWindow,Ui_client):
         self.slider_head.setSingleStep(1)
         self.slider_head.setValue(90)
         self.slider_head.valueChanged.connect(self.head)
-        
+
         self.slider_horizon.setMinimum(-20)
         self.slider_horizon.setMaximum(20)
         self.slider_horizon.setSingleStep(1)
         self.slider_horizon.setValue(0)
         self.slider_horizon.valueChanged.connect(self.horizon)
-        
+
         self.slider_height.setMinimum(-20)
         self.slider_height.setMaximum(20)
         self.slider_height.setSingleStep(1)
@@ -97,7 +97,7 @@ class MyWindow(QMainWindow,Ui_client):
         self.slider_roll.setSingleStep(1)
         self.slider_roll.setValue(0)
         self.slider_roll.valueChanged.connect(lambda:self.attitude(self.label_roll,self.slider_roll))
-        
+
         self.slider_speed.setMinimum(2)
         self.slider_speed.setMaximum(10)
         self.slider_speed.setSingleStep(1)
@@ -131,7 +131,7 @@ class MyWindow(QMainWindow,Ui_client):
             else:
                 self.timer.stop()
                 self.Button_Video.setText('Open Video')
-           
+
         if(event.key() == Qt.Key_R):
             print("R")
             self.relax()
@@ -166,19 +166,19 @@ class MyWindow(QMainWindow,Ui_client):
                 print("A")
                 self.left()
                 self.Key_A=True
-            elif event.key() == Qt.Key_D:                  
+            elif event.key() == Qt.Key_D:
                 print("D")
                 self.right()
                 self.Key_D=True
-            elif event.key() == Qt.Key_Q:                  
+            elif event.key() == Qt.Key_Q:
                 print("Q")
                 self.step_left()
                 self.Key_Q=True
-            elif event.key() == Qt.Key_E:                  
+            elif event.key() == Qt.Key_E:
                 print("E")
                 self.step_right()
-                self.Key_E=True 
-            elif event.key() == Qt.Key_Space:  
+                self.Key_E=True
+            elif event.key() == Qt.Key_Space:
                 print("Space")
                 self.buzzer()
                 self.Key_Space=True
@@ -214,7 +214,7 @@ class MyWindow(QMainWindow,Ui_client):
                 print("release E")
                 self.stop()
                 self.Key_E=False
-                
+
         if(event.key() == Qt.Key_Space):
             if not(event.isAutoRepeat()) and self.Key_Space==True:
                 print("release Space")
@@ -268,7 +268,7 @@ class MyWindow(QMainWindow,Ui_client):
                 self.repaint()
             except Exception as e:
                 print(e)
-    
+
     def closeEvent(self,event):
         try:
             self.timer_power.stop()
@@ -369,7 +369,7 @@ class MyWindow(QMainWindow,Ui_client):
             self.client.turn_on_client(self.IP)
             self.video=threading.Thread(target=self.client.receiving_video,args=(self.IP,))
             self.instruction=threading.Thread(target=self.receive_instruction,args=(self.IP,))
-            self.video.start() 
+            self.video.start()
             self.instruction.start()
             self.Button_Connect.setText('Disconnect')
             self.timer_power.start(1000)
@@ -406,7 +406,7 @@ class MyWindow(QMainWindow,Ui_client):
         command=cmd.CMD_MOVE_STOP+"#"+str(self.slider_speed.value())+'\n'
         self.client.send_data(command)
         #print (command)
-        
+
     def forward(self):
         self.stand()
         command=cmd.CMD_MOVE_FORWARD+"#"+str(self.slider_speed.value())+'\n'
@@ -418,7 +418,7 @@ class MyWindow(QMainWindow,Ui_client):
         command=cmd.CMD_MOVE_BACKWARD+"#"+str(self.slider_speed.value())+'\n'
         self.client.send_data(command)
         #print (command)
-        
+
     def step_left(self):
         self.stand()
         command=cmd.CMD_MOVE_LEFT+"#"+str(self.slider_speed.value())+'\n'
@@ -430,7 +430,7 @@ class MyWindow(QMainWindow,Ui_client):
         command=cmd.CMD_MOVE_RIGHT+"#"+str(self.slider_speed.value())+'\n'
         self.client.send_data(command)
         #print (command)
-        
+
     def left(self):
         self.stand()
         command=cmd.CMD_TURN_LEFT+"#"+str(self.slider_speed.value())+'\n'
@@ -467,7 +467,7 @@ class MyWindow(QMainWindow,Ui_client):
             self.client.send_data(command)
             self.Button_Buzzer.setText('Buzzer')
             #print (command)
-            
+
     #BALANCE
     def imu(self):
         if self.Button_IMU.text()=='Balance':
@@ -541,7 +541,7 @@ class MyWindow(QMainWindow,Ui_client):
         except Exception as e:
             print(e)
 
-    #ATTITUDE        
+    #ATTITUDE
     def attitude(self,target1,target2):
         try:
             r=str(self.slider_roll.value())
@@ -558,7 +558,7 @@ class MyWindow(QMainWindow,Ui_client):
             #print(command)
         except Exception as e:
             print(e)
-        
+
     def showCalibrationWindow(self):
         self.stop()
         self.calibrationWindow=calibrationWindow(self.client)
@@ -836,9 +836,9 @@ class calibrationWindow(QMainWindow,Ui_calibration):
         self.point[3][2] = self.four_z.text()
 
         self.Save_to_txt(self.point,'point')
-        reply = QMessageBox.information(self,                        
-                                        "Message",  
-                                        "Saved successfully",  
+        reply = QMessageBox.information(self,
+                                        "Message",
+                                        "Saved successfully",
                                         QMessageBox.Yes)
         #print(command)
     def Read_from_txt(self,filename):
@@ -862,7 +862,7 @@ class calibrationWindow(QMainWindow,Ui_calibration):
                 file2.write('\t')
             file2.write('\n')
         file2.close()
-        
+
     def leg_point(self,leg):
         if leg.text() == "One":
             if leg.isChecked() == True:

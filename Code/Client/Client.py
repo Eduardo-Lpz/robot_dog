@@ -33,15 +33,15 @@ class Client:
             self.client_socket1.close()
         except Exception as e:
             print(e)
-    def is_valid_image_4_bytes(self,buf): 
+    def is_valid_image_4_bytes(self,buf):
         bValid = True
-        if buf[6:10] in (b'JFIF', b'Exif'):     
+        if buf[6:10] in (b'JFIF', b'Exif'):
             if not buf.rstrip(b'\0\r\n').endswith(b'\xff\xd9'):
                 bValid = False
-        else:        
-            try:  
-                Image.open(io.BytesIO(buf)).verify() 
-            except:  
+        else:
+            try:
+                Image.open(io.BytesIO(buf)).verify()
+            except:
                 bValid = False
         return bValid
     def Looking_for_the_ball(self):
@@ -131,6 +131,6 @@ class Client:
         data=""
         data=self.client_socket1.recv(1024).decode('utf-8')
         return data
- 
+
 if __name__ == '__main__':
     pass
