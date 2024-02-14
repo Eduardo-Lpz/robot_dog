@@ -12,9 +12,9 @@ class MyWindow(QMainWindow,Ui_client):
     def __init__(self):
         super(MyWindow,self).__init__()
         self.setupUi(self)
-        self.setWindowIcon(QIcon('Picture/logo_Mini.png'))
+        self.setWindowIcon(QIcon(os.path.abspath('Picture/logo_Mini.png')))
         self.Video.setScaledContents (True)
-        self.Video.setPixmap(QPixmap('Picture/dog_client.png'))
+        self.Video.setPixmap(QPixmap(os.path.abspath('Picture/dog_client.png')))
         self.setFocusPolicy(Qt.StrongFocus)
         self.Key_W=False
         self.Key_A=False
@@ -26,7 +26,7 @@ class MyWindow(QMainWindow,Ui_client):
 
         self.client=Client()
         self.client.move_speed=str(self.slider_speed.value())
-        file = open('IP.txt', 'r')
+        file = open(os.path.abspath('IP.txt'), 'r')
         self.lineEdit_IP_Adress.setText(str(file.readline()))
         file.close()
 
@@ -101,7 +101,8 @@ class MyWindow(QMainWindow,Ui_client):
         self.slider_speed.setMinimum(2)
         self.slider_speed.setMaximum(10)
         self.slider_speed.setSingleStep(1)
-        self.slider_speed.setValue(8)
+        # initial speed (was 8)
+        self.slider_speed.setValue(3)
         self.slider_speed.valueChanged.connect(self.speed)
         self.client.move_speed=str(self.slider_speed.value())
 
@@ -361,7 +362,7 @@ class MyWindow(QMainWindow,Ui_client):
 
     #CONNECT
     def connect(self):
-        file=open('IP.txt','w')
+        file=open(os.path.abspath('IP.txt'),'w')
         file.write(self.lineEdit_IP_Adress.text())
         file.close()
         if self.Button_Connect.text()=='Connect':
@@ -444,6 +445,7 @@ class MyWindow(QMainWindow,Ui_client):
         #print (command)
 
     def speed(self):
+        print("speed:", self.slider_speed.value())
         self.client.move_speed=str(self.slider_speed.value())
         self.label_speed.setText(str(self.slider_speed.value()))
 
@@ -587,9 +589,9 @@ class faceWindow(QMainWindow,Ui_Face):
     def __init__(self,client):
         super(faceWindow,self).__init__()
         self.setupUi(self)
-        self.setWindowIcon(QIcon('Picture/logo_Mini.png'))
+        self.setWindowIcon(QIcon(os.path.abspath('Picture/logo_Mini.png')))
         self.label_video.setScaledContents(True)
-        self.label_video.setPixmap(QPixmap('Picture/dog_client.png'))
+        self.label_video.setPixmap(QPixmap(os.path.abspath('Picture/dog_client.png')))
         self.Button_Read_Face.clicked.connect(self.readFace)
         self.client = client
         self.face_image=''
@@ -661,8 +663,8 @@ class faceWindow(QMainWindow,Ui_Face):
         cv2.cvtColor(self.face_image, cv2.COLOR_BGR2RGB, self.face_image)
         cv2.imwrite('Face/'+str(len(self.client.face.name))+'.jpg', self.face_image)
         self.client.face.name.append([str(len(self.client.face.name)),str(self.name)])
-        self.client.face.Save_to_txt(self.client.face.name, 'Face/name')
-        self.client.face.name = self.client.face.Read_from_txt('Face/name')
+        self.client.face.Save_to_txt(self.client.face.name, os.path.abspath('Face/name'))
+        self.client.face.name = self.client.face.Read_from_txt(os.path.abspath('Face/name'))
         self.photoCount += 1
         self.Button_Read_Face.setText("Reading "+str(0)+" S "+str(self.photoCount)+"/30")
 
@@ -688,10 +690,10 @@ class calibrationWindow(QMainWindow,Ui_calibration):
     def __init__(self,client):
         super(calibrationWindow,self).__init__()
         self.setupUi(self)
-        self.setWindowIcon(QIcon('Picture/logo_Mini.png'))
+        self.setWindowIcon(QIcon(os.path.abspath('Picture/logo_Mini.png')))
         self.label_picture.setScaledContents (True)
-        self.label_picture.setPixmap(QPixmap('Picture/dog_calibration.png'))
-        self.point=self.Read_from_txt('point')
+        self.label_picture.setPixmap(QPixmap(os.path.abspath('Picture/dog_calibration.png')))
+        self.point=self.Read_from_txt(os.path.abspath('point'))
         self.set_point(self.point)
         self.client=client
         self.leg='one'
@@ -892,7 +894,7 @@ class ledWindow(QMainWindow,Ui_led):
         super(ledWindow,self).__init__()
         self.setupUi(self)
         self.client = client
-        self.setWindowIcon(QIcon('Picture/logo_Mini.png'))
+        self.setWindowIcon(QIcon(os.path.abspath('Picture/logo_Mini.png')))
         self.hsl = [0, 0, 1]
         self.rgb = [0, 0, 0]
         self.dial_color.setRange(0, 360)

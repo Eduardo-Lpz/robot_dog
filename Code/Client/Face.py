@@ -5,9 +5,9 @@ import numpy as np
 class  Face:
     def __init__(self):
         self.recognizer = cv2.face.LBPHFaceRecognizer_create()
-        self.recognizer.read('Face/face.yml')
-        self.detector = cv2.CascadeClassifier("Face/haarcascade_frontalface_default.xml")
-        self.name = self.Read_from_txt('Face/name')
+        self.recognizer.read(os.path.abspath('Face/face.yml'))
+        self.detector = cv2.CascadeClassifier(os.path.abspath('Face/haarcascade_frontalface_default.xml'))
+        self.name = self.Read_from_txt(os.path.abspath('Face/name'))
     def Read_from_txt(self, filename):
         file1 = open(filename + ".txt", "r")
         list_row = file1.readlines()
@@ -46,8 +46,8 @@ class  Face:
     def trainImage(self):
         faces, labels = self.getImagesAndLabels()
         self.recognizer.train(faces, np.array(labels))
-        self.recognizer.write('Face/face.yml')
-        self.recognizer.read('Face/face.yml')
+        self.recognizer.write(os.path.abspath('Face/face.yml'))
+        self.recognizer.read(os.path.abspath('Face/face.yml'))
         print("\n  {0} faces trained.".format(len(np.unique(labels))))
     def face_detect(self,img):
         try:

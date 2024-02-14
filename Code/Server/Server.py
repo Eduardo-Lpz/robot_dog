@@ -81,7 +81,7 @@ class Server:
     def send_data(self,connect,data):
         try:
             connect.send(data.encode('utf-8'))
-            #print("send",data)
+            print("send",data)
         except Exception as e:
             print(e)
     def transmission_video(self):

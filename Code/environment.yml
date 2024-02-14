@@ -1,0 +1,16 @@
+name: robot_dog_env
+channels:
+  - defaults
+  - conda-forge
+# Platforms:
+#   - osx-arm64
+dependencies:
+  - pyqt=5.15.2
+  - numpy=1.26.3
+  # - pandas
+  - pillow=10.2.0
+  - matplotlib=3.8.0
+  # - scikit-learn=0.22.1
+  - opencv-python-headless
+  - opencv-contrib-python-headless
+  - scikit-fuzzy

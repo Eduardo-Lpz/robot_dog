@@ -15,7 +15,8 @@ class Control:
         self.imu=IMU()
         self.servo=Servo()
         self.pid = Incremental_PID(0.5,0.0,0.0025)
-        self.speed = 8
+        # initial speed = 8
+        self.speed = 2
         self.height = 99
         self.timeout = 0
         self.move_flag = 0

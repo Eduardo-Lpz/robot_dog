@@ -40,3 +40,7 @@ class Incremental_PID:
 
     def setI_saturation(self,saturation_val):
         self.I_saturation = saturation_val
+
+
+# Fuzzy-PID
+# pip install matplotlib
